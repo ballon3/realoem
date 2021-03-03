@@ -1,29 +1,23 @@
  
+import webbrowser
+from collections import OrderedDict
 from datetime import datetime
-from typing import List, Optional
 
 import click
+import lxml
 import pandas as pd
-import webbrowser
 import requests
 import typer
 from bs4 import BeautifulSoup
-from pydantic import BaseModel
-import lxml
 from terminaltables import AsciiTable
-from collections import OrderedDict 
+
+from models import Part
 
 basep = "https://www.realoem.com"
 
 @click.group()
 def cli():
     pass
-
-class Part(BaseModel):
-    set_id: int 
-    url: str = None
-    title: str = None
-    img_url: str = None
 
 @cli.command()
 def initdb():
@@ -119,7 +113,6 @@ def partgrp(url):
     asset_name = pobj.title.replace(" ", "_") +'.jpg'
     #with open(asset_name, 'wb') as handler:
     #    handler.write(img_data)
-
     print(path)
     webbrowser.open(path)
     getparts(path)
@@ -132,64 +125,8 @@ def getparts(path):
     part_df = df_list[0]
     part_df.drop(columns="Notes")
     print(part_df)
+
 app = typer.Typer()
-
-class RealOEM:
-
-    def __init__(self):
-        
-        self.path = "https://www.realoem.com/bmw/enUS/showparts?id=AM33-USA---E46-BMW-323i&diagId=33_0839"
-        soup = self.get_page(self.path)
-        table = self.get_table(soup)
-        jsonobj = self.get_json(table)
-        return None
-    
-    def list_part_groups():
-        part_grps = "https://www.realoem.com/bmw/enUS/partgrp?id=AM33-USA-11-1998-E46-BMW-323i"
-        res = requests.get(part_grps)
-        soup = BeautifulSoup(res.content, features="lxml")
-        table = soup.find_all('table')[0] 
-        df = pd.read_html(str(table))
-        print(df)
-        
-    def list_parts(grp: str):
-        part_grp = f"https://www.realoem.com/bmw/enUS/partgrp?id=AM33-USA---E46-BMW-323i&mg={grp}"
-        res = requests.get(part_grp)
-        soup = BeautifulSoup(res.content, features="lxml")
-        table = soup.find_all('table')[0] 
-        df = pd.read_html(str(table))
-        print(df)
-
-    def get_page(self, path):
-        res = requests.get(path)
-        soup = BeautifulSoup(res.content, features="lxml")
-        return soup
-
-    def get_table(self, soup):
-        table = soup.find_all('table')[0] 
-        df = pd.read_html(str(table))
-        return df 
-
-    def get_json(self, df):
-        json_asset = df[0].to_json(orient='records')
-        return json_asset
-    
-    def get_bolt(self, obj):
-        for e in obj:
-            print(e)
 
 if __name__ == "__main__":
     maingrp()
-
-class PartList(BaseModel):
-    Parts: List[Part] = None
-
-class Part(BaseModel):
-    no: str
-    description: str = None 
-    supp: str = None 
-    qty: str = None 
-    date_from: str = None 
-    date_to: str = None
-    partnum: str = None 
-    price: str = None 
