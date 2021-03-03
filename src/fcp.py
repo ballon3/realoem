@@ -13,13 +13,16 @@ class FCPEuro:
 
     def sign_in(self, creds):
         pass
-    def select_search(self):
+    def select_search(self, partnum):
         
         # grab group item in df
         # grab first 
         # check if first name and/or descrip contians part number 
-        df.find_all("itemprop=name"
-        if gname 
+        #df.find_all("itemprop=name"
+        #if gname.contians(partnum)
+        pass
+
+    def set_quantity(self):
         pass
 
     def grab_item(self, part_num):

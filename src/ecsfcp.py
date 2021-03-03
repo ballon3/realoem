@@ -136,16 +136,26 @@ def getparts(path):
     print(part_df)
     
     euro = FCPEuro()
+    items = []
     for ind in part_df.index: 
         try:
             pdescrip = part_df['Description'][ind]
-            if 'bolt' in part_df["Description"][ind]:
+            substrings = ['bolt', 'nut', 'gasket']
+            match = any([substring in pdescrip for substring in substrings])
+                
+            if match: 
                 partnum = str(part_df['Part Number'][ind])
                 pnum = partnum.split(".", 1)
                 print(pdescrip, pnum[0])
-                euro.grab_item(pnum[0])
+                items.append(pnum[0])
         except:
             pass
+
+    set_list = list(set(items)) 
+
+    for x in set_list:
+        euro.grab_item(x)
+
     print("done")
     
 
