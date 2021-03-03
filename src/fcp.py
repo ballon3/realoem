@@ -14,7 +14,14 @@ class FCPEuro:
     def sign_in(self, creds):
         pass
     def select_search(self):
+        
+        # grab group item in df
+        # grab first 
+        # check if first name and/or descrip contians part number 
+        df.find_all("itemprop=name"
+        if gname 
         pass
+
     def grab_item(self, part_num):
 
         search_path = "https://www.fcpeuro.com/Parts/?keywords="

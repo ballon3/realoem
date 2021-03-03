@@ -129,7 +129,7 @@ def getparts(path):
     click.echo("Select Part Groups")
     URL = 'https://www.realoem.com/bmw/enUS/partgrp?id=AM33-USA---E46-BMW-323i'
     page = requests.get(path)
-    df_list = pd.read_html(page.text) # this parses all the tables in webpages to a list
+    df_list = pd.read_html(page.text, converters={'Part Number': str}) # this parses all the tables in webpages to a list
     part_df = df_list[0]
     del part_df["Unnamed: 8"]
     
@@ -140,9 +140,10 @@ def getparts(path):
         try:
             pdescrip = part_df['Description'][ind]
             if 'bolt' in part_df["Description"][ind]:
-                partnum = str(int(part_df['Part Number'][ind]))
-                print(pdescrip, partnum)
-                euro.grab_item(partnum)
+                partnum = str(part_df['Part Number'][ind])
+                pnum = partnum.split(".", 1)
+                print(pdescrip, pnum[0])
+                euro.grab_item(pnum[0])
         except:
             pass
     print("done")
