@@ -12,6 +12,7 @@ from bs4 import BeautifulSoup
 from terminaltables import AsciiTable
 
 from models import Part
+from fcp import FCPEuro
 
 basep = "https://www.realoem.com"
 
@@ -78,8 +79,12 @@ def maingrp():
     pobj = parts[int(value)]
     path = basep+pobj.url
     print(path)
-    webbrowser.open(path)
+
+    value = click.prompt('Open group in browser?(y/n)')
+    if value == "y":
+        webbrowser.open(path)
     partgrp(path)
+
 
 def partgrp(url):
     click.echo("Select Part Diagrams")
@@ -114,7 +119,10 @@ def partgrp(url):
     #with open(asset_name, 'wb') as handler:
     #    handler.write(img_data)
     print(path)
-    webbrowser.open(path)
+    val = click.prompt('Open group in browser?(y/n)')
+    if val == "y":
+        webbrowser.open(path)
+
     getparts(path)
            
 def getparts(path):
@@ -123,8 +131,22 @@ def getparts(path):
     page = requests.get(path)
     df_list = pd.read_html(page.text) # this parses all the tables in webpages to a list
     part_df = df_list[0]
-    part_df.drop(columns="Notes")
+    del part_df["Unnamed: 8"]
+    
     print(part_df)
+    
+    euro = FCPEuro()
+    for ind in part_df.index: 
+        try:
+            pdescrip = part_df['Description'][ind]
+            if 'bolt' in part_df["Description"][ind]:
+                partnum = str(int(part_df['Part Number'][ind]))
+                print(pdescrip, partnum)
+                euro.grab_item(partnum)
+        except:
+            pass
+    print("done")
+    
 
 app = typer.Typer()
 

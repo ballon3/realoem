@@ -1,3 +1,8 @@
+import requests
+import webbrowser
+from pydantic import BaseModel
+from typing import Optional
+from datetime import datetime
 
 class FCPEuro:
     def __init__(self, year: str = "1999", model: str = "323i", part_number: str = "33176770788") -> None:
@@ -6,16 +11,24 @@ class FCPEuro:
         self.year = year 
         self.part_number = part_number
 
-    def grab_item(self):
-        base_path = f"{self.base_path}&keywords={self.part_number}?year={self.year}&m=20&e=177&t=6&b=5&d=65&v="
-        "https://www.fcpeuro.com/BMW-parts/323i/?year=1999&m=20&e=177&t=6&b=5&d=65&v=&keywords=33176770788"
+    def sign_in(self, creds):
+        pass
+    def select_search(self):
+        pass
+    def grab_item(self, part_num):
+
+        search_path = "https://www.fcpeuro.com/Parts/?keywords="
+        search_p = search_path+part_num
+
+        webbrowser.open(search_p)
+        return(search_p)
 
 class Table(BaseModel):
     id: int = 1
     No: str = "Foo"
     Description: Optional[str] = "Bar"
-    Supp: datetime = datetime(2020, 1, 1)
-    Qty: datetime = datetime(2020, 1, 1)
+    #Supp: datetime = datetime(2020, 1, 1)
+    #Qty: datetime = datetime(2020, 1, 1)
     partNumber: str = None
 
 class Car(BaseModel):
